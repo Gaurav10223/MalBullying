@@ -2,12 +2,12 @@
 
 MalBullying is an **automated, AI-powered malware detection** system that performs **in-depth static and dynamic analysis** to identify and mitigate cyber threats efficiently.  
 
-### 🔥 Why MalBullying?  
+## 🔥 Why MalBullying?  
 ✅ **Detect & Analyze Malware** – Identifies malicious files using AI-powered inspection.  
 ✅ **Monitor Suspicious Behavior** – Observes malware activity in a secure sandbox environment.  
 ✅ **Proactive Threat Mitigation** – Prevents execution, quarantines threats, and alerts users.  
 
-### 🛠️ **Key Capabilities**  
+## 🛠️ **Key Capabilities**  
 🔹 **AI-Powered Static Code Inspection** – Scans files for malicious patterns.  
 🔹 **Behavioral Anomaly Detection** – Tracks malware activity in a controlled environment.  
 🔹 **Network Threat Intelligence** – Identifies and blocks suspicious connections.  
@@ -48,6 +48,21 @@ MalBullying follows a **structured, modular architecture** for efficient malware
 
 ---
 
+## 🎥 **Demo Video**  
+🚀 **See MalBullying in Action!** Watch the full demonstration of how MalBullying detects and neutralizes threats in real time.  
+
+📽️ **[Watch the Video Now](https://github.com/user-attachments/assets/b2fec0c9-5dec-40ac-97bb-f7bdc6af4cec)**  
+
+### 🔹 **Key Highlights in the Video:**  
+✅ **Installation & Setup** – Step-by-step guide to getting started.  
+✅ **Live Malware Detection** – See how MalBullying analyzes and neutralizes threats.  
+✅ **Behavioral Analysis in Action** – Real-time threat monitoring inside a sandbox.  
+✅ **Network Security Features** – Blocking malicious connections effectively.  
+
+Stay ahead of cyber threats with **MalBullying!** 🚀🔒  
+
+---
+
 ## 📌 **Core Features**  
 ✅ **Hash-Based Scanner (HBS)** – Identifies malware using known hash signatures.  
 ✅ **Statistical Profiling** – Detects irregular file patterns through data analysis.  
@@ -60,15 +75,17 @@ MalBullying follows a **structured, modular architecture** for efficient malware
 ## 🛠️ **Technologies Used**  
 - **Python** – Core backend logic.  
 - **Machine Learning** – AI-driven malware detection.  
-- **Network Security** – Identifies and blocks threats in real time.
-- **HTML/CSS** - Frontend
-- **Server client architecture** - For system independencies
+- **Network Security** – Identifies and blocks threats in real-time.  
+- **HTML/CSS** – Frontend.  
+- **Server-Client Architecture** – For system independencies.  
 
 MalBullying is built to provide **robust, proactive malware protection**, ensuring a safer cybersecurity environment. 🚀  
 
-## Contributors
-- **Swaroop Dora** (IIT2022052)
-- **Piyush Priyadarshi** (IIT2022051)
-- **Ajay Kumar** (IIT2022080)
-- **Avanish Gurjar** (IIT2022049)
-- **Gaurav Singh Painkara** (IIT2022028)
+---
+
+## 👥 **Contributors**  
+- **Swaroop Dora** (IIT2022052)  
+- **Piyush Priyadarshi** (IIT2022051)  
+- **Ajay Kumar** (IIT2022080)  
+- **Avanish Gurjar** (IIT2022049)  
+- **Gaurav Singh Painkara** (IIT2022028)  
