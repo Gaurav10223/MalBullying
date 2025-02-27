@@ -65,3 +65,10 @@ MalBullying follows a **structured, modular architecture** for efficient malware
 - **Server client architecture** - For system independencies
 
 MalBullying is built to provide **robust, proactive malware protection**, ensuring a safer cybersecurity environment. 🚀  
+
+## Contributors
+- **Swaroop Dora** (IIT2022052)
+- **Piyush Priyadarshi** (IIT2022051)
+- **Ajay Kumar** (IIT2022080)
+- **Avanish Gurjar** (IIT2022049)
+- **Gaurav Singh Painkara** (IIT2022028)
