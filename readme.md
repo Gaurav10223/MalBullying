@@ -27,3 +27,6 @@ Run the following command
 venv\Scripts\activate
 python app.main.py
 ```
+## Architecture
+![malbullying_arch](https://github.com/user-attachments/assets/a4605c6a-c1e4-42e4-af78-b94e03e273eb)
+
