@@ -1,4 +1,4 @@
-# 🚀 **MalBullying**  
+# 🛡️ **MalBullying**  
 
 MalBullying is an **automated, AI-powered malware detection** system that performs **in-depth static and dynamic analysis** to identify and mitigate cyber threats efficiently.  
 
