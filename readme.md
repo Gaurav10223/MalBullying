@@ -60,6 +60,8 @@ MalBullying follows a **structured, modular architecture** for efficient malware
 ## 🛠️ **Technologies Used**  
 - **Python** – Core backend logic.  
 - **Machine Learning** – AI-driven malware detection.  
-- **Network Security** – Identifies and blocks threats in real time.  
+- **Network Security** – Identifies and blocks threats in real time.
+- **HTML/CSS** - Frontend
+- **Server client architecture** - For system independencies
 
 MalBullying is built to provide **robust, proactive malware protection**, ensuring a safer cybersecurity environment. 🚀  
