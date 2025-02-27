@@ -49,9 +49,10 @@ MalBullying follows a **structured, modular architecture** for efficient malware
 ---
 
 ## 🎥 **Demo Video**  
-🚀 **See MalBullying in Action!** Watch the full demonstration of how MalBullying detects and neutralizes threats in real time.  
+🚀 **See MalBullying in Action!** 
 
-📽️ **[Watch the Video Now](https://github.com/user-attachments/assets/b2fec0c9-5dec-40ac-97bb-f7bdc6af4cec)**  
+https://github-production-user-asset-6210df.s3.amazonaws.com/168909755/417397479-b2fec0c9-5dec-40ac-97bb-f7bdc6af4cec.mp4
+
 
 ### 🔹 **Key Highlights in the Video:**  
 ✅ **Installation & Setup** – Step-by-step guide to getting started.  
