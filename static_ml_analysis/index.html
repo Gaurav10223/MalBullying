@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malware Scanner</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #166088;
+            --accent-color: #4caf50;
+            --danger-color: #e74c3c;
+            --background-color: #f5f7fa;
+            --card-color: #ffffff;
+            --text-color: #333333;
+            --border-radius: 8px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .description {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .upload-container {
+            background-color: var(--card-color);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .upload-area {
+            border: 2px dashed #ccc;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .upload-area:hover, .upload-area.dragover {
+            border-color: var(--primary-color);
+            background-color: rgba(74, 111, 165, 0.05);
+        }
+
+        .upload-area p {
+            margin: 10px 0 0;
+            color: #666;
+        }
+
+        .file-info {
+            margin: 15px 0;
+            padding: 10px;
+            display: none;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .upload-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+
+        .upload-btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .upload-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .results-container {
+            background-color: var(--card-color);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .result-icon {
+            font-size: 30px;
+            margin-right: 15px;
+        }
+
+        .result-title {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .result-subtitle {
+            margin: 5px 0 0;
+            color: #666;
+        }
+
+        .result-malicious {
+            color: var(--danger-color);
+        }
+
+        .result-legitimate {
+            color: var(--accent-color);
+        }
+
+        .details-card {
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .details-title {
+            margin: 0;
+            font-size: 18px;
+            color: var(--primary-color);
+        }
+
+        .details-toggle {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .details-content {
+            display: none;
+        }
+
+        .feature-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .feature-table th, .feature-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .feature-table th {
+            background-color: #f2f2f2;
+            font-weight: 500;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: var(--primary-color);
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            color: var(--danger-color);
+            background-color: rgba(231, 76, 60, 0.1);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin: 20px 0;
+            border-left: 4px solid var(--danger-color);
+            display: none;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Malware Analysis Scanner</h1>
+            <p class="description">Upload executable files for malware classification</p>
+        </header>
+
+        <div class="upload-container">
+            <div id="upload-area" class="upload-area">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#4a6fa5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                <h3>Drag and drop file here</h3>
+                <p>or click to select a file</p>
+                <input type="file" id="file-input" style="display: none;">
+            </div>
+
+            <div id="file-info" class="file-info">
+                <strong>Selected file: </strong>
+                <span id="file-name"></span>
+                <span id="file-size"></span>
+            </div>
+
+            <div class="error-message" id="error-message"></div>
+
+            <button id="upload-btn" class="upload-btn" disabled>Scan for malware</button>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Analyzing file...</p>
+            </div>
+        </div>
+
+        <div class="results-container" id="results-container">
+            <div class="result-header">
+                <div class="result-icon" id="result-icon">✓</div>
+                <div>
+                    <h2 class="result-title" id="result-title">Analysis Complete</h2>
+                    <p class="result-subtitle" id="result-subtitle">Classification result for your file</p>
+                </div>
+            </div>
+
+            <div class="details-card">
+                <div class="details-header">
+                    <h3 class="details-title">Analysis Details</h3>
+                    <button class="details-toggle" id="details-toggle">Show details</button>
+                </div>
+                <div class="details-content" id="details-content">
+                    <table class="feature-table" id="feature-table">
+                        <thead>
+                            <tr>
+                                <th>Feature Index</th>
+                                <th>Feature Value</th>
+                            </tr>
+                        </thead>
+                        <tbody id="feature-table-body">
+                            <!-- Data will be added dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Malware Analysis Scanner | Powered by Advanced ML Classification</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadArea = document.getElementById('upload-area');
+            const fileInput = document.getElementById('file-input');
+            const fileInfo = document.getElementById('file-info');
+            const fileName = document.getElementById('file-name');
+            const fileSize = document.getElementById('file-size');
+            const uploadBtn = document.getElementById('upload-btn');
+            const loading = document.getElementById('loading');
+            const resultsContainer = document.getElementById('results-container');
+            const resultIcon = document.getElementById('result-icon');
+            const resultTitle = document.getElementById('result-title');
+            const resultSubtitle = document.getElementById('result-subtitle');
+            const detailsToggle = document.getElementById('details-toggle');
+            const detailsContent = document.getElementById('details-content');
+            const featureTableBody = document.getElementById('feature-table-body');
+            const errorMessage = document.getElementById('error-message');
+
+            // Define server URL - update this to match your backend
+            const SERVER_URL = 'http://localhost:5000';
+
+            // Handle file selection via click
+            uploadArea.addEventListener('click', () => {
+                fileInput.click();
+            });
+
+            // Handle drag and drop events
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, unhighlight, false);
+            });
+
+            function highlight() {
+                uploadArea.classList.add('dragover');
+            }
+
+            function unhighlight() {
+                uploadArea.classList.remove('dragover');
+            }
+
+            // Handle file drop
+            uploadArea.addEventListener('drop', handleDrop, false);
+
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                handleFiles(files);
+            }
+
+            // Handle file selection
+            fileInput.addEventListener('change', function() {
+                handleFiles(this.files);
+            });
+
+            function handleFiles(files) {
+                if (files.length > 0) {
+                    const file = files[0];
+                    updateFileInfo(file);
+                    uploadBtn.disabled = false;
+                }
+            }
+
+            function updateFileInfo(file) {
+                fileName.textContent = file.name;
+                fileSize.textContent = ` (${formatFileSize(file.size)})`;
+                fileInfo.style.display = 'block';
+            }
+
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+
+            // Handle file upload
+            uploadBtn.addEventListener('click', function() {
+                if (fileInput.files.length === 0) return;
+                
+                const file = fileInput.files[0];
+                const formData = new FormData();
+                formData.append('file', file);
+                
+                // Reset UI
+                errorMessage.style.display = 'none';
+                loading.style.display = 'block';
+                uploadBtn.disabled = true;
+
+                // Send the file to the server
+                fetch(`http://localhost:4000/scan`, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    loading.style.display = 'none';
+                    displayResults(data);
+                })
+                .catch(error => {
+                    loading.style.display = 'none';
+                    uploadBtn.disabled = false;
+                    errorMessage.textContent = `Error: ${error.message || 'Could not complete the scan'}`;
+                    errorMessage.style.display = 'block';
+                });
+            });
+
+            function displayResults(data) {
+                if (data.error) {
+                    errorMessage.textContent = `Error: ${data.error}`;
+                    errorMessage.style.display = 'block';
+                    return;
+                }
+
+                // Update the results UI
+                resultsContainer.style.display = 'block';
+                
+                if (data.result === 'malicious') {
+                    resultIcon.innerHTML = '❌';
+                    resultIcon.className = 'result-icon result-malicious';
+                    resultTitle.textContent = 'Malicious File Detected';
+                    resultTitle.className = 'result-title result-malicious';
+                } else {
+                    resultIcon.innerHTML = '✓';
+                    resultIcon.className = 'result-icon result-legitimate';
+                    resultTitle.textContent = 'File Appears Legitimate';
+                    resultTitle.className = 'result-title result-legitimate';
+                }
+                
+                resultSubtitle.textContent = `Analysis result for ${data.filename}`;
+                
+                // Populate feature table
+                featureTableBody.innerHTML = '';
+                if (data.features && Array.isArray(data.features)) {
+                    data.features.forEach((feature, index) => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td>${feature}</td>
+                        `;
+                        featureTableBody.appendChild(row);
+                    });
+                }
+            }
+
+            // Toggle details section
+            detailsToggle.addEventListener('click', function() {
+                if (detailsContent.style.display === 'block') {
+                    detailsContent.style.display = 'none';
+                    detailsToggle.textContent = 'Show details';
+                } else {
+                    detailsContent.style.display = 'block';
+                    detailsToggle.textContent = 'Hide details';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

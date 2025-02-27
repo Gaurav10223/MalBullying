@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML Static Analysis</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4cc9f0;
+            --success: #4ade80;
+            --warning: #fbbf24;
+            --danger: #f87171;
+            --light: #f9fafb;
+            --dark: #1f2937;
+            --background: #f8fafc;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--background);
+            color: var(--dark);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        header {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 1rem;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+            margin: 1.5rem 0 1rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        h3 {
+            font-size: 1.25rem;
+            margin: 1.25rem 0 0.75rem;
+            color: var(--dark);
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .upload-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            cursor: pointer;
+            height: 8rem;
+            width: 100%;
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            background-color: #f9fafb;
+            transition: all 0.3s;
+        }
+        
+        .file-input-wrapper:hover {
+            border-color: var(--primary);
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+        
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            font-size: 100px;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .file-input-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            gap: 0.5rem;
+            color: #6b7280;
+        }
+        
+        .upload-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+        }
+        
+        .upload-btn:hover {
+            background-color: var(--secondary);
+        }
+        
+        .status {
+            font-style: italic;
+            color: #6b7280;
+            margin-top: 0.5rem;
+            animation: fadeIn 0.3s;
+        }
+        
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+        
+        .analysis-btn {
+            background-color: white;
+            color: var(--dark);
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 0.65rem 1.25rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .analysis-btn:hover:not(:disabled) {
+            background-color: #f9fafb;
+            border-color: #d1d5db;
+        }
+        
+        .analysis-btn:active:not(:disabled) {
+            transform: translateY(1px);
+        }
+        
+        .analysis-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        /* Tabs styling */
+        .tabs-container {
+            margin-top: 2rem;
+        }
+        
+        .tabs-header {
+            display: flex;
+            overflow-x: auto;
+            border-bottom: 1px solid #e5e7eb;
+            gap: 0.25rem;
+            margin-bottom: 1rem;
+            scrollbar-width: thin;
+        }
+        
+        .tabs-header::-webkit-scrollbar {
+            height: 4px;
+        }
+        
+        .tabs-header::-webkit-scrollbar-thumb {
+            background-color: #d1d5db;
+            border-radius: 4px;
+        }
+        
+        .tab-button {
+            padding: 0.75rem 1.25rem;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .tab-button:hover {
+            color: var(--primary);
+        }
+        
+        .tab-button.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .results-container h2 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        pre {
+            background-color: #f5f5f5;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .risk-score {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 1rem 0;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .high-risk {
+            color: white;
+            background-color: var(--danger);
+        }
+        
+        .medium-risk {
+            color: #7c2d12;
+            background-color: var(--warning);
+        }
+        
+        .low-risk {
+            color: #14532d;
+            background-color: var(--success);
+        }
+        
+        .error {
+            color: var(--danger);
+            background-color: rgba(248, 113, 113, 0.1);
+            padding: 0.75rem;
+            border-radius: 6px;
+            border-left: 4px solid var(--danger);
+            margin: 1rem 0;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .stat-card {
+            background-color: #f9fafb;
+            border-radius: 6px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .stat-value.malicious {
+            color: var(--danger);
+        }
+        
+        .stat-value.suspicious {
+            color: var(--warning);
+        }
+        
+        .stat-value.harmless {
+            color: var(--success);
+        }
+        
+        .stat-value.undetected {
+            color: #6b7280;
+        }
+        
+        .vt-link {
+            display: inline-block;
+            background-color: #f9fafb;
+            color: var(--primary);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            margin: 0.5rem 0;
+            border: 1px solid #e5e7eb;
+            transition: all 0.2s;
+        }
+        
+        .vt-link:hover {
+            background-color: rgba(67, 97, 238, 0.05);
+            border-color: var(--primary);
+        }
+        
+        .hash-display {
+            background-color: #f5f5f5;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            word-break: break-all;
+            border: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 0.5rem 0;
+        }
+        
+        .copy-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #6b7280;
+            transition: color 0.2s;
+            font-size: 1rem;
+        }
+        
+        .copy-btn:hover {
+            color: var(--primary);
+        }
+        
+        .result-section {
+            margin-bottom: 2rem;
+            animation: fadeIn 0.3s;
+        }
+        
+        .summary-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+        
+        .badge-safe {
+            background-color: var(--success);
+            color: #14532d;
+        }
+        
+        .badge-warning {
+            background-color: var(--warning);
+            color: #7c2d12;
+        }
+        
+        .badge-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .badge-neutral {
+            background-color: #e5e7eb;
+            color: #374151;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+        
+        .loading {
+            animation: pulse 1.5s infinite;
+        }
+        
+        .icon {
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .card {
+                padding: 1rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .analysis-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .tab-button {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+    <script>
+        function uploadFile() {
+            const fileInput = document.getElementById("fileInput");
+            if (!fileInput.files.length) {
+                alert("Please select a file first");
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append("file", fileInput.files[0]);
+            
+            // Show loading state
+            document.getElementById("uploadStatus").textContent = "Uploading...";
+            document.getElementById("uploadStatus").classList.add("loading");
+            document.getElementById("uploadBtn").disabled = true;
+            
+            fetch("/upload", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById("uploadStatus").textContent = "File uploaded successfully!";
+                    document.getElementById("uploadStatus").classList.remove("loading");
+                    document.getElementById("uploadBtn").disabled = false;
+                    
+                    // Update file name display
+                    document.getElementById("selectedFileName").textContent = fileInput.files[0].name;
+                    
+                    // Enable analysis buttons after successful upload
+                    document.querySelectorAll(".analysis-btn").forEach(btn => {
+                        btn.disabled = false;
+                    });
+                } else {
+                    document.getElementById("uploadStatus").textContent = "Error: " + data.error;
+                    document.getElementById("uploadStatus").classList.remove("loading");
+                    document.getElementById("uploadBtn").disabled = false;
+                }
+            })
+            .catch(error => {
+                document.getElementById("uploadStatus").textContent = "Upload failed: " + error;
+                document.getElementById("uploadStatus").classList.remove("loading");
+                document.getElementById("uploadBtn").disabled = false;
+            });
+        }
+
+        function analyzeFile(type) {
+            document.getElementById("analysisStatus").textContent = `Running ${type.replace('_', ' ')} analysis...`;
+            document.getElementById("analysisStatus").classList.add("loading");
+            
+            // Disable buttons during analysis
+            document.querySelectorAll(".analysis-btn").forEach(btn => {
+                btn.disabled = true;
+            });
+            
+            fetch("/analyze", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ type: type })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById("analysisStatus").textContent = data.message;
+                document.getElementById("analysisStatus").classList.remove("loading");
+                
+                // Re-enable buttons
+                document.querySelectorAll(".analysis-btn").forEach(btn => {
+                    btn.disabled = false;
+                });
+                
+                // Fetch and display results
+                getResults();
+            })
+            .catch(error => {
+                document.getElementById("analysisStatus").textContent = "Analysis failed: " + error;
+                document.getElementById("analysisStatus").classList.remove("loading");
+                
+                // Re-enable buttons
+                document.querySelectorAll(".analysis-btn").forEach(btn => {
+                    btn.disabled = false;
+                });
+            });
+        }
+        
+        function getResults() {
+            fetch("/results")
+            .then(response => response.json())
+            .then(data => {
+                // Create tabbed interface
+                createTabbedResults(data);
+            })
+            .catch(error => {
+                document.getElementById("results").innerHTML = `
+                    <div class="card">
+                        <p class="error">Failed to fetch results: ${error}</p>
+                    </div>
+                `;
+            });
+        }
+        
+        function createTabbedResults(data) {
+            const resultsDiv = document.getElementById("results");
+            
+            // Create container for tabs
+            resultsDiv.innerHTML = `
+                <div class="card">
+                    <h2>📊 Analysis Results</h2>
+                    <div class="tabs-container">
+                        <div class="tabs-header" id="tabs-header"></div>
+                        <div class="tabs-content" id="tabs-content"></div>
+                    </div>
+                </div>
+            `;
+            
+            const tabsHeader = document.getElementById("tabs-header");
+            const tabsContent = document.getElementById("tabs-content");
+            
+            // Create "Summary" tab first
+            const summaryTabId = "tab-summary";
+            createTab("Summary", summaryTabId, "📊", tabsHeader);
+            
+            // Create tab content for summary
+            const summaryContent = document.createElement("div");
+            summaryContent.id = summaryTabId + "-content";
+            summaryContent.className = "tab-content";
+            tabsContent.appendChild(summaryContent);
+            
+            // Build summary content
+            buildSummaryTab(summaryContent, data);
+            
+            // Create tabs for each analysis type
+            const tabAnalysisMap = {
+                "hash_based_scanner": { name: "Hash-Based Scanner", icon: "🛡️" },
+                "static_analysis": { name: "Statistical Profiling", icon: "📝" },
+                "ml_static_analysis": { name: "AI Code Inspector", icon: "🤖" },
+                "dynamic_analysis": { name: "Behavioral Analysis", icon: "▶️" }
+            };
+            
+            // Create tabs for each analysis type that has results
+            for (const [analysisType, result] of Object.entries(data)) {
+                if (result && tabAnalysisMap[analysisType]) {
+                    const info = tabAnalysisMap[analysisType];
+                    const tabId = "tab-" + analysisType;
+                    
+                    createTab(info.name, tabId, info.icon, tabsHeader);
+                    
+                    // Create tab content
+                    const tabContent = document.createElement("div");
+                    tabContent.id = tabId + "-content";
+                    tabContent.className = "tab-content";
+                    
+                    // Populate tab content
+                    if (analysisType === "hash_based_scanner" && !result.error) {
+                        displayVirusTotalResults(tabContent, result);
+                    } else if (result.error) {
+                        tabContent.innerHTML = `<p class="error">Error: ${result.error}</p>`;
+                        if (result.message) {
+                            tabContent.innerHTML += `<p>${result.message}</p>`;
+                        }
+                    } else if (result.output) {
+                        tabContent.innerHTML = `<pre>${result.output}</pre>`;
+                    } else {
+                        tabContent.innerHTML = `<pre>${JSON.stringify(result, null, 2)}</pre>`;
+                    }
+                    
+                    tabsContent.appendChild(tabContent);
+                }
+            }
+            
+            // Create "Raw Data" tab last
+            const rawDataTabId = "tab-raw";
+            createTab("Raw Data", rawDataTabId, "📄", tabsHeader);
+            
+            // Create tab content for raw data
+            const rawDataContent = document.createElement("div");
+            rawDataContent.id = rawDataTabId + "-content";
+            rawDataContent.className = "tab-content";
+            rawDataContent.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            tabsContent.appendChild(rawDataContent);
+            
+            // Activate the first tab (Summary)
+            activateTab(summaryTabId);
+            
+            // Add click handlers for tabs
+            document.querySelectorAll(".tab-button").forEach(button => {
+                button.addEventListener("click", function() {
+                    activateTab(this.id);
+                });
+            });
+        }
+        
+        function createTab(name, id, icon, tabsHeaderElement) {
+            const tab = document.createElement("button");
+            tab.className = "tab-button";
+            tab.id = id;
+            tab.innerHTML = `${icon} ${name}`;
+            tabsHeaderElement.appendChild(tab);
+        }
+        
+        function activateTab(tabId) {
+            // Deactivate all tabs
+            document.querySelectorAll(".tab-button").forEach(tab => {
+                tab.classList.remove("active");
+            });
+            
+            document.querySelectorAll(".tab-content").forEach(content => {
+                content.classList.remove("active");
+            });
+            
+            // Activate the clicked tab
+            document.getElementById(tabId).classList.add("active");
+            document.getElementById(tabId + "-content").classList.add("active");
+        }
+        
+        function buildSummaryTab(container, data) {
+            container.innerHTML = "<h3>Analysis Summary</h3>";
+            
+            let overallRisk = "Unknown";
+            let riskBadgeClass = "badge-neutral";
+            let riskDescription = "No complete analysis available";
+            
+            // Check if hash-based scan completed
+            if (data.hash_based_scanner && !data.hash_based_scanner.error) {
+                const riskScore = data.hash_based_scanner.risk_score;
+                
+                if (riskScore !== undefined) {
+                    if (riskScore > 50) {
+                        overallRisk = "High Risk";
+                        riskBadgeClass = "badge-danger";
+                        riskDescription = "File is highly suspicious and likely malicious";
+                    } else if (riskScore > 20) {
+                        overallRisk = "Medium Risk";
+                        riskBadgeClass = "badge-warning";
+                        riskDescription = "File shows some suspicious traits";
+                    } else {
+                        overallRisk = "Low Risk";
+                        riskBadgeClass = "badge-safe";
+                        riskDescription = "File appears to be safe";
+                    }
+                }
+            }
+            
+            // Build summary card
+            container.innerHTML += `
+                <div class="card">
+                    <h3>Overall Assessment <span class="summary-badge ${riskBadgeClass}">${overallRisk}</span></h3>
+                    <p>${riskDescription}</p>
+                    
+                    <h3 style="margin-top: 1.5rem;">Analysis Status</h3>
+                    <div class="stats-grid">
+                        ${createAnalysisStatusCard("Hash Scanner", data.hash_based_scanner)}
+                        ${createAnalysisStatusCard("Static Analysis", data.static_analysis)}
+                        ${createAnalysisStatusCard("AI Code Inspector", data.ml_static_analysis)}
+                        ${createAnalysisStatusCard("Behavioral Analysis", data.dynamic_analysis)}
+                    </div>
+                </div>
+            `;
+            
+            // If we have hash-based scan results, add quick findings
+            if (data.hash_based_scanner && !data.hash_based_scanner.error && data.hash_based_scanner.stats) {
+                const hbsData = data.hash_based_scanner;
+                
+                container.innerHTML += `
+                    <div class="card" style="margin-top: 1rem;">
+                        <h3>Quick Findings</h3>
+                        <p>File has been detected as malicious by ${hbsData.stats.malicious || 0} scanners out of ${hbsData.total_scans}.</p>
+                        
+                        <div class="risk-score ${getRiskClass(hbsData.risk_score)}">
+                            ${getRiskIcon(hbsData.risk_score)} Risk Score: ${hbsData.risk_score}%
+                        </div>
+                        
+                        <div class="hash-display">
+                            <span>SHA-256: ${hbsData.hash}</span>
+                            <button class="copy-btn" onclick="navigator.clipboard.writeText('${hbsData.hash}')">
+                                📋
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        function createAnalysisStatusCard(name, result) {
+            let status = "Not Run";
+            let statusClass = "undetected";
+            let icon = "⏳";
+            
+            if (result) {
+                if (result.error) {
+                    status = "Error";
+                    statusClass = "malicious";
+                    icon = "❌";
+                } else {
+                    status = "Completed";
+                    statusClass = "harmless";
+                    icon = "✓";
+                }
+            }
+            
+            return `
+                <div class="stat-card">
+                    <div class="stat-label">${name}</div>
+                    <div class="stat-value ${statusClass}">${icon}</div>
+                    <div>${status}</div>
+                </div>
+            `;
+        }
+        
+        function getRiskClass(score) {
+            if (score > 50) return "high-risk";
+            if (score > 20) return "medium-risk";
+            return "low-risk";
+        }
+        
+        function getRiskIcon(score) {
+            if (score > 50) return "⚠";
+            if (score > 20) return "!";
+            return "✓";
+        }
+        
+        function displayVirusTotalResults(container, result) {
+            if (result.risk_score !== undefined) {
+                // Determine risk level class
+                let riskClass = getRiskClass(result.risk_score);
+                let riskIcon = getRiskIcon(result.risk_score);
+                
+                // Add risk score display
+                container.innerHTML += `
+                    <div class="risk-score ${riskClass}">
+                        ${riskIcon} Risk Score: ${result.risk_score}%
+                    </div>
+                    <p>Malicious detections: ${result.malicious_count} / ${result.total_scans} scanners</p>
+                `;
+                
+                // Add stats breakdown
+                if (result.stats) {
+                    container.innerHTML += `<h4>Detection Breakdown:</h4>`;
+                    
+                    container.innerHTML += `
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-label">Malicious</div>
+                                <div class="stat-value malicious">${result.stats.malicious || 0}</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Suspicious</div>
+                                <div class="stat-value suspicious">${result.stats.suspicious || 0}</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Harmless</div>
+                                <div class="stat-value harmless">${result.stats.harmless || 0}</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Undetected</div>
+                                <div class="stat-value undetected">${result.stats.undetected || 0}</div>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // Add permalink to VirusTotal report
+                if (result.permalink) {
+                    container.innerHTML += `
+                        <a href="${result.permalink}" target="_blank" class="vt-link">
+                            🔗 View full report
+                        </a>
+                    `;
+                }
+                
+                // Add file hash with copy button
+                container.innerHTML += `
+                    <div class="hash-display">
+                        <span>SHA-256: ${result.hash}</span>
+                        <button class="copy-btn" onclick="navigator.clipboard.writeText('${result.hash}')">
+                            📋
+                        </button>
+                    </div>
+                `;
+            } else {
+                // Fallback to standard JSON display if we don't have the expected structure
+                container.innerHTML += `<pre>${JSON.stringify(result, null, 2)}</pre>`;
+            }
+        }
+        
+        function formatAnalysisName(name) {
+            return name.split('_').map(word => 
+                word.charAt(0).toUpperCase() + word.slice(1)
+            ).join(' ');
+        }
+        
+        function updateFileName() {
+            const fileInput = document.getElementById("fileInput");
+            const fileNameDisplay = document.getElementById("selectedFileName");
+            
+            if (fileInput.files.length > 0) {
+                fileNameDisplay.textContent = fileInput.files[0].name;
+            } else {
+                fileNameDisplay.textContent = "No file selected";
+            }
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>🛡️ MalBullying</h1>
+        <p>Upload suspicious files for comprehensive security analysis</p>
+    </header>
+    
+    <div class="card">
+        <div class="upload-container">
+            <label class="file-input-wrapper">
+                <input type="file" id="fileInput" onchange="updateFileName()">
+                <div class="file-input-label">
+                    <span>📤</span>
+                    <span>Drag & drop file here or click to browse</span>
+                    <span id="selectedFileName">No file selected</span>
+                </div>
+            </label>
+            <button id="uploadBtn" class="upload-btn" onclick="uploadFile()">
+                📤 Upload File
+            </button>
+            <div id="uploadStatus" class="status"></div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h2>🔍 Analysis Options</h2>
+        <div class="button-group">
+            <button class="analysis-btn" onclick="analyzeFile('hash_based')" disabled>
+                🛡️ Hash-Based Scanner (HBS)
+            </button>
+            <button class="analysis-btn" onclick="analyzeFile('static')" disabled>
+                📝 Statistical Profiling
+            </button>
+            <button class="analysis-btn" onclick="analyzeFile('ml_static')" disabled>
+                🤖 AI Code Inspector
+            </button>
+            <button class="analysis-btn" onclick="analyzeFile('dynamic')" disabled>
+                ▶️ Behavioral Analysis
+            </button>
+        </div>
+        <div id="analysisStatus" class="status"></div>
+    </div>
+    
+    <div id="results" class="results-container">
+        <!-- Results will be populated here by JavaScript -->
+    </div>
+    
+    <footer style="margin-top: 2rem; text-align: center; color: #6b7280; padding: 1rem; border-top: 1px solid #e5e7eb;">
+        <p>© 2025 MalBullying Security Tools • All Rights Reserved</p>
+    </footer>
+</body>
+</html>     
