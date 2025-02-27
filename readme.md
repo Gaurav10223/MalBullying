@@ -1,32 +1,65 @@
-# MALBULLYING
+# 🚀 **MalBullying**  
 
-MalBullying provide an automated,robust solution for detecting and analyzing malware threats through in-depth static and dynamic analysis. This system aims to enhance cybersecurity by identifying malicious files, monitoring their behavior, and mitigating risks efficiently. It employs advanced techniques such as AI-powered static code inspection, behavioral anomaly detection in a sandbox environment, and network threat intelligence to ensure comprehensive threat protection. The ultimate goal is to safeguard systems and networks by preventing malware execution, quarantining threats, and notifying users of potential risks.
+MalBullying is an **automated, AI-powered malware detection** system that performs **in-depth static and dynamic analysis** to identify and mitigate cyber threats efficiently.  
 
-![malbullying](https://github.com/user-attachments/assets/6399e842-842f-486a-a9ab-47fe3b497d38)
+### 🔥 Why MalBullying?  
+✅ **Detect & Analyze Malware** – Identifies malicious files using AI-powered inspection.  
+✅ **Monitor Suspicious Behavior** – Observes malware activity in a secure sandbox environment.  
+✅ **Proactive Threat Mitigation** – Prevents execution, quarantines threats, and alerts users.  
 
+### 🛠️ **Key Capabilities**  
+🔹 **AI-Powered Static Code Inspection** – Scans files for malicious patterns.  
+🔹 **Behavioral Anomaly Detection** – Tracks malware activity in a controlled environment.  
+🔹 **Network Threat Intelligence** – Identifies and blocks suspicious connections.  
 
-### Cloning
-Clone the repo using the following command
-```terminal
+With these advanced techniques, MalBullying ensures **comprehensive cybersecurity**, keeping systems protected from evolving threats.  
+
+![MalBullying](https://github.com/user-attachments/assets/6399e842-842f-486a-a9ab-47fe3b497d38)  
+
+---
+
+## 📥 **Getting Started**  
+
+### 🔹 Clone the Repository  
+```sh
 git clone https://github.com/piyush20502/MalBullying
+cd MalBullying
 ```
 
-
-
-### Installation
-
-Run the following command in powershell in admin mode
-```ps
+### ⚙️ **Installation**  
+Run the installer script in **PowerShell (Admin Mode)**:  
+```powershell
 ./installer.ps1
 ```
 
-### Execution
-
-Run the following command
-```terminal
+### 🚀 **Run the Application**  
+Activate the virtual environment and launch the program:  
+```sh
 venv\Scripts\activate
-python app.main.py
+python app/main.py
 ```
-## Architecture
-![malbullying_arch](https://github.com/user-attachments/assets/a4605c6a-c1e4-42e4-af78-b94e03e273eb)
 
+---
+
+## 🏗️ **System Architecture**  
+MalBullying follows a **structured, modular architecture** for efficient malware detection and analysis.  
+
+![MalBullying Architecture](https://github.com/user-attachments/assets/a4605c6a-c1e4-42e4-af78-b94e03e273eb)  
+
+---
+
+## 📌 **Core Features**  
+✅ **Hash-Based Scanner (HBS)** – Identifies malware using known hash signatures.  
+✅ **Statistical Profiling** – Detects irregular file patterns through data analysis.  
+✅ **AI Code Inspector** – Analyzes suspicious code using machine learning.  
+✅ **Behavioral Analysis** – Observes runtime execution to spot threats.  
+✅ **Network Traffic Analysis** – Detects malicious network connections.  
+
+---
+
+## 🛠️ **Technologies Used**  
+- **Python** – Core backend logic.  
+- **Machine Learning** – AI-driven malware detection.  
+- **Network Security** – Identifies and blocks threats in real time.  
+
+MalBullying is built to provide **robust, proactive malware protection**, ensuring a safer cybersecurity environment. 🚀  
