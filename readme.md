@@ -79,9 +79,11 @@ MalBullying is built to provide **robust, proactive malware protection**, ensuri
 
 ---
 
-## 👥 **Contributors**  
-- **Swaroop Dora** (IIT2022052)  
-- **Piyush Priyadarshi** (IIT2022051)  
-- **Ajay Kumar** (IIT2022080)  
-- **Avanish Gurjar** (IIT2022049)  
-- **Gaurav Singh Painkara** (IIT2022028)  
+Here's the corrected version:
+
+## 👥 **Contributors**
+- **Swaroop Dora** (IIT2022052) - automatefreely@gmail.com
+- **Piyush Priyadarshi** (IIT2022051)
+- **Ajay Kumar** (IIT2022080)
+- **Avanish Gurjar** (IIT2022049)
+- **Gaurav Singh Painkara** (IIT2022028)
