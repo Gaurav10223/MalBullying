@@ -38,7 +38,7 @@ Activate the virtual environment and launch the program:
 venv\Scripts\activate
 python app/main.py
 ```
-
+- Visit localhost:5000 in browser to open the UI.
 ---
 
 ## 🏗️ **System Architecture**  
@@ -51,14 +51,7 @@ MalBullying follows a **structured, modular architecture** for efficient malware
 ## 🎥 **Demo Video**  
 🚀 **See MalBullying in Action!** 
 
-https://github-production-user-asset-6210df.s3.amazonaws.com/168909755/417397479-b2fec0c9-5dec-40ac-97bb-f7bdc6af4cec.mp4
-
-
-### 🔹 **Key Highlights in the Video:**  
-✅ **Installation & Setup** – Step-by-step guide to getting started.  
-✅ **Live Malware Detection** – See how MalBullying analyzes and neutralizes threats.  
-✅ **Behavioral Analysis in Action** – Real-time threat monitoring inside a sandbox.  
-✅ **Network Security Features** – Blocking malicious connections effectively.  
+https://github-production-user-asset-6210df.s3.amazonaws.com/168909755/417397479-b2fec0c9-5dec-40ac-97bb-f7bdc6af4cec.mp4 
 
 Stay ahead of cyber threats with **MalBullying!** 🚀🔒  
 
@@ -68,9 +61,11 @@ Stay ahead of cyber threats with **MalBullying!** 🚀🔒
 ✅ **Hash-Based Scanner (HBS)** – Identifies malware using known hash signatures.  
 ✅ **Statistical Profiling** – Detects irregular file patterns through data analysis.  
 ✅ **AI Code Inspector** – Analyzes suspicious code using machine learning.  
-✅ **Behavioral Analysis** – Observes runtime execution to spot threats.  
-✅ **Network Traffic Analysis** – Detects malicious network connections.  
+✅ **Dynamic Analysis** – Runtime malicious activity detection.  
 
+## 📌 **Under Development** 
+- **Network Traffic Analysis** – Detects malicious network connections.
+- **Real Time Monitoring** – Track all the process in the machine.   
 ---
 
 ## 🛠️ **Technologies Used**  
