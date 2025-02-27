@@ -175,11 +175,15 @@ def extract_infos(fpath):
     return res
 
 if __name__ == '__main__':
-    # Load the classifier from 'model.pkl'
-    clf = joblib.load('C:\\Users\\john\\Desktop\\New_AI\\static_ml_analysis\\classifier.pkl')
+    # Define the base directory dynamically
+    base_dir = os.path.dirname(os.path.abspath(__file__))
 
-    # Load the features list from a separate file, say 'features_list.pkl'
-    with open('C:\\Users\\john\\Desktop\\New_AI\\static_ml_analysis\\features.pkl', 'rb') as f:
+    # Load the classifier
+    with open(os.path.join(base_dir, "classifier.pkl"), "rb") as clf_file:
+        clf = joblib.load(clf_file)
+
+    # Load the features list
+    with open(os.path.join(base_dir, "features.pkl"), "rb") as f:
         features = pickle.load(f)
     
     # Extract the information from the file provided as argument

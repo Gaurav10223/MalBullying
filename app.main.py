@@ -76,11 +76,14 @@ def run_ml_static_analysis():
     try:
         if not current_file_path:
             return False
-        
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        python_executable = os.path.join(base_dir, "static_ml_analysis", "env", "Scripts", "python.exe")
+        script_path = os.path.join(base_dir, "static_ml_analysis", "main.py")
+        print([python_executable, script_path,  current_file_path])
         # Option 2: Run the ML analysis script directly (new method)
         process = subprocess.Popen(
             # [sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), "static_ml_analysis", "main.py"),  current_file_path],
-            ["C:\\Users\\john\\Desktop\\New_AI\\static_ml_analysis\\env\\Scripts\\python.exe", "C:\\Users\\john\\Desktop\\New_AI\\static_ml_analysis\\main.py",  current_file_path],
+            [python_executable, script_path,  current_file_path],
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True,

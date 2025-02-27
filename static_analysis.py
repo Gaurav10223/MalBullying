@@ -286,6 +286,11 @@ def extract_strings_with_floss(file_path):
         Path('/usr/bin/floss'),
         Path(sys.prefix) / 'Scripts' / 'floss.exe',
         Path('flare-floss/floss.py'),
+        # Add local enviroments
+        Path('C:/Program Files/FLARE/floss.exe'),
+        Path('C:/Program Files (x86)/FLARE/floss.exe'),
+        Path('D:/Tools/FLARE/floss.exe'),
+        Path('E:/FLARE/floss.exe'),
     ]
     
     for floss_path in possible_paths:
