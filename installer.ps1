@@ -153,6 +153,33 @@ if (Test-Path $venvPath) {
 Write-Host "Installing dependencies from requirements.new.txt..." -ForegroundColor Cyan
 python -m pip install -r requirements.new.txt
 
+# Set the download URL for the Visual Studio Build Tools
+$downloadUrl = "https://aka.ms/vs/17/release/vs_BuildTools.exe"
+$installerPath = "$env:TEMP\vs_BuildTools.exe"
+
+# Download the installer
+Write-Host "Downloading Visual Studio Build Tools..."
+Invoke-WebRequest -Uri $downloadUrl -OutFile $installerPath
+
+# Define installation arguments (modify as needed)
+$installArgs = `
+    "--quiet --wait --norestart --nocache " +
+    "--installPath C:\BuildTools " +
+    "--add Microsoft.VisualStudio.Workload.VCTools " +
+    "--add Microsoft.VisualStudio.Component.VC.CMake.Project " +
+    "--add Microsoft.VisualStudio.Component.Windows10SDK.20348"
+
+# Run the installer
+Write-Host "Installing Visual Studio Build Tools..."
+Start-Process -FilePath $installerPath -ArgumentList $installArgs -NoNewWindow -Wait
+
+# Clean up installer file
+Remove-Item -Path $installerPath -Force
+
+Write-Host "Installation completed successfully!"
+
+python -m pip install flare-floss
+
 Write-Host "Deactivating virtual environment 'venv'..." -ForegroundColor Yellow
 deactivate
 
