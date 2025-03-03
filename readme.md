@@ -27,11 +27,21 @@ cd MalBullying
 ```
 
 ### ⚙️ **Installation**  
-
 ---
 Run the installer script in **PowerShell (Admin Mode)**:  
 ```powershell
 ./installer.ps1
+```
+
+#### Common Issues
+![{E7C4D510-ED3F-4BB4-A471-3662E4C9DFF0}](https://github.com/user-attachments/assets/9158b0df-de0d-4c20-8ad7-89111fb7399d)
+You need to run the following command before running above installation command.
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+```
+Or you can run the installer script using the following command
+```powershell
+PowerShell -ExecutionPolicy Bypass -File .\installer.ps1
 ```
 
 ### 🚀 **Run the Application**  
