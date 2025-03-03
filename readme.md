@@ -14,6 +14,8 @@ MalBullying is an **automated, AI-powered malware detection** system that perfor
 
 With these advanced techniques, MalBullying ensures **comprehensive cybersecurity**, keeping systems protected from evolving threats.  
 
+> Note: The SOP and SRS documents are in PDF format. Some pages may be hidden by default due to GitHub's rendering limitations. Please click "More pages" to view all pages.
+
 ![MalBullying](https://github.com/user-attachments/assets/6399e842-842f-486a-a9ab-47fe3b497d38)  
 
 ---
