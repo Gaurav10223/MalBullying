@@ -28,24 +28,10 @@ cd MalBullying
 
 ### ⚙️ **Installation**  
 
-Here's the corrected version:  
-
 ---
-
-### Step 1  
 Run the installer script in **PowerShell (Admin Mode)**:  
 ```powershell
 ./installer.ps1
-```
-
-### Step 2  
-Install the C++ build tools from [here](https://visualstudio.microsoft.com/visual-cpp-build-tools/) if not already.  
-
-### Step 3  
-Activate the virtual environment and install **flare-floss**:  
-```sh
-venv\Scripts\activate
-python -m pip install flare-floss
 ```
 
 ### 🚀 **Run the Application**  
