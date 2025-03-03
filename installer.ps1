@@ -151,7 +151,7 @@ if (Test-Path $venvPath) {
 }
 
 Write-Host "Installing dependencies from requirements.new.txt..." -ForegroundColor Cyan
-pyenv exec python -m pip install -r requirements.new.txt
+python -m pip install -r requirements.new.txt
 
 Write-Host "Deactivating virtual environment 'venv'..." -ForegroundColor Yellow
 deactivate
@@ -180,7 +180,7 @@ if (Test-Path $venvPath) {
 }
 
 Write-Host "Installing dependencies from requirements.new.txt..." -ForegroundColor Cyan
-pyenv exec python -m pip install -r requirements.new.txt
+python -m pip install -r requirements.new.txt
 
 Write-Host "Deactivating virtual environment 'env'..." -ForegroundColor Yellow
 deactivate
