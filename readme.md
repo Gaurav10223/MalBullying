@@ -29,11 +29,21 @@ cd MalBullying
 ```
 
 ### ⚙️ **Installation**  
+#### Windows
 ---
 Run the installer script in **PowerShell (Admin Mode)**:  
 ```powershell
 ./installer.ps1
 ```
+
+#### Linux
+---
+Run the installer script in **PowerShell (Admin Mode)**:  
+```bash
+chmod +x install.sh
+./install.sh
+```
+
 
 #### Common Issues
 ![{E7C4D510-ED3F-4BB4-A471-3662E4C9DFF0}](https://github.com/user-attachments/assets/9158b0df-de0d-4c20-8ad7-89111fb7399d)
