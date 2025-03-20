@@ -82,22 +82,46 @@ def run_ml_static_analysis():
         # Determine platform (Windows or Linux)
         if os.name == 'nt':  # For Windows
             python_executable = os.path.join(base_dir, "static_ml_analysis", "env", "Scripts", "python.exe")
-        else:  # For Linux or other Unix-based systems
-            python_executable = os.path.join(base_dir, "static_ml_analysis", "env", "bin", "python")
+            script_path = os.path.join(base_dir, "static_ml_analysis", "main.py")
+            process = subprocess.Popen(
+                [python_executable, script_path, current_file_path],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                encoding='utf-8',
+                errors='replace'
+            )
 
-        script_path = os.path.join(base_dir, "static_ml_analysis", "main.py")
+        else:  # For Linux or other Unix-based systems
+            # python_executable = os.path.join(base_dir, "static_ml_analysis", "env", "bin", "python")
+            command = f"""
+            export PATH="$HOME/.pyenv/bin:$PATH" &&
+            export PYENV_ROOT="$HOME/.pyenv" &&
+            eval "$(pyenv init --path)" &&
+            eval "$(pyenv init -)" &&
+            eval "$(pyenv virtualenv-init -)" &&
+            cd static_ml_analysis && 
+            pyenv activate env && 
+            python main.py {base_dir}/{current_file_path}
+            """
+            # Run the entire command in the shell
+            process = subprocess.Popen(
+                command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, encoding='utf-8', errors='replace'
+            )
+
+        # script_path = os.path.join(base_dir, "static_ml_analysis", "main.py")
 
         # Option 2: Run the ML analysis script directly (new method)
         # print([python_executable, script_path, current_file_path])
         
-        process = subprocess.Popen(
-            [python_executable, script_path, current_file_path],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            text=True,
-            encoding='utf-8',
-            errors='replace'
-        )
+        # process = subprocess.Popen(
+        #     [python_executable, script_path, current_file_path],
+        #     stdout=subprocess.PIPE,
+        #     stderr=subprocess.STDOUT,
+        #     text=True,
+        #     encoding='utf-8',
+        #     errors='replace'
+        # )
 
         output = process.communicate()[0]
         
