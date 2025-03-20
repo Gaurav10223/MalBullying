@@ -193,7 +193,7 @@ $PYTHON_CMD -m venv env
 VENV_PATH="./env/bin/activate"
 if [ -f "$VENV_PATH" ]; then
     echo "Activating virtual environment 'env'..."
-    source "$VENV_PATH"
+    . "$VENV_PATH"
 else
     echo "Error: Virtual environment not found. Run '$PYTHON_CMD -m venv env' first."
     exit 1
@@ -219,7 +219,7 @@ $PYTHON_CMD -m venv venv
 VENV_PATH="./venv/bin/activate"
 if [ -f "$VENV_PATH" ]; then
     echo "Activating virtual environment 'venv'..."
-    source "$VENV_PATH"
+    . "$VENV_PATH"
 else
     echo "Error: Virtual environment not found. Run '$PYTHON_CMD -m venv venv' first."
     exit 1
@@ -255,7 +255,7 @@ $PYTHON_CMD -m venv env
 VENV_PATH="./env/bin/activate"
 if [ -f "$VENV_PATH" ]; then
     echo "Activating virtual environment 'env'..."
-    source "$VENV_PATH"
+    . "$VENV_PATH"
 else
     echo "Error: Virtual environment not found. Run '$PYTHON_CMD -m venv env' first."
     exit 1
