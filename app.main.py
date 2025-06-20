@@ -70,58 +70,106 @@ def run_static_analysis():
         results["static_analysis"] = {"error": str(e)}
         return False
 
+# def run_ml_static_analysis():
+#     """Run ML-based static analysis using local Python module"""
+#     global current_file_path
+#     try:
+#         if not current_file_path:
+#             return False
+
+#         base_dir = os.path.dirname(os.path.abspath(__file__))
+
+#         # Determine platform (Windows or Linux)
+#         if os.name == 'nt':  # For Windows
+#             python_executable = os.path.join(base_dir, "static_ml_analysis", "env", "Scripts", "python.exe")
+#             script_path = os.path.join(base_dir, "static_ml_analysis", "main.py")
+#             process = subprocess.Popen(
+#                 [python_executable, script_path, current_file_path],
+#                 stdout=subprocess.PIPE,
+#                 stderr=subprocess.STDOUT,
+#                 text=True,
+#                 encoding='utf-8',
+#                 errors='replace'
+#             )
+
+#         else:  # For Linux or other Unix-based systems
+#             # python_executable = os.path.join(base_dir, "static_ml_analysis", "env", "bin", "python")
+#             command = f"""
+#             export PATH="$HOME/.pyenv/bin:$PATH" &&
+#             export PYENV_ROOT="$HOME/.pyenv" &&
+#             eval "$(pyenv init --path)" &&
+#             eval "$(pyenv init -)" &&
+#             eval "$(pyenv virtualenv-init -)" &&
+#             cd static_ml_analysis && 
+#             pyenv activate env && 
+#             python main.py {base_dir}/{current_file_path}
+#             """
+#             # Run the entire command in the shell
+#             process = subprocess.Popen(
+#                 command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, encoding='utf-8', errors='replace'
+#             )
+
+#         # script_path = os.path.join(base_dir, "static_ml_analysis", "main.py")
+
+#         # Option 2: Run the ML analysis script directly (new method)
+#         # print([python_executable, script_path, current_file_path])
+        
+#         # process = subprocess.Popen(
+#         #     [python_executable, script_path, current_file_path],
+#         #     stdout=subprocess.PIPE,
+#         #     stderr=subprocess.STDOUT,
+#         #     text=True,
+#         #     encoding='utf-8',
+#         #     errors='replace'
+#         # )
+
+#         output = process.communicate()[0]
+        
+#         # Parse the output
+#         is_legitimate = "legitimate" in output.lower()
+#         features_info = ""
+        
+#         if "Features used for classification:" in output:
+#             features_info = output.split("Features used for classification:")[1].strip()
+        
+#         results["ml_static_analysis"] = {
+#             "output": output,
+#             "is_legitimate": is_legitimate,
+#             "features_info": features_info,
+#             "classification": "Legitimate" if is_legitimate else "Malicious"
+#         }
+        
+#         return process.returncode == 0
+#     except Exception as e:
+#         results["ml_static_analysis"] = {"error": str(e)}
+#         return False
+
+
 def run_ml_static_analysis():
-    """Run ML-based static analysis using local Python module"""
+    """Run ML-based static analysis using the dedicated Python environment."""
     global current_file_path
     try:
         if not current_file_path:
             return False
 
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-
-        # Determine platform (Windows or Linux)
-        if os.name == 'nt':  # For Windows
-            python_executable = os.path.join(base_dir, "static_ml_analysis", "env", "Scripts", "python.exe")
-            script_path = os.path.join(base_dir, "static_ml_analysis", "main.py")
-            process = subprocess.Popen(
-                [python_executable, script_path, current_file_path],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                text=True,
-                encoding='utf-8',
-                errors='replace'
-            )
-
-        else:  # For Linux or other Unix-based systems
-            # python_executable = os.path.join(base_dir, "static_ml_analysis", "env", "bin", "python")
-            command = f"""
-            export PATH="$HOME/.pyenv/bin:$PATH" &&
-            export PYENV_ROOT="$HOME/.pyenv" &&
-            eval "$(pyenv init --path)" &&
-            eval "$(pyenv init -)" &&
-            eval "$(pyenv virtualenv-init -)" &&
-            cd static_ml_analysis && 
-            pyenv activate env && 
-            python main.py {base_dir}/{current_file_path}
-            """
-            # Run the entire command in the shell
-            process = subprocess.Popen(
-                command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, encoding='utf-8', errors='replace'
-            )
-
-        # script_path = os.path.join(base_dir, "static_ml_analysis", "main.py")
-
-        # Option 2: Run the ML analysis script directly (new method)
-        # print([python_executable, script_path, current_file_path])
+        # Define absolute paths within the container
+        python_executable = "/app/static_ml_analysis/env/bin/python"
+        script_path = "/app/static_ml_analysis/main.py"
         
-        # process = subprocess.Popen(
-        #     [python_executable, script_path, current_file_path],
-        #     stdout=subprocess.PIPE,
-        #     stderr=subprocess.STDOUT,
-        #     text=True,
-        #     encoding='utf-8',
-        #     errors='replace'
-        # )
+        # Ensure the file path passed to the script is absolute
+        absolute_file_path = os.path.abspath(current_file_path)
+
+        # The command is now simple and reliable
+        command = [python_executable, script_path, absolute_file_path]
+        
+        process = subprocess.Popen(
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            encoding='utf-8',
+            errors='replace'
+        )
 
         output = process.communicate()[0]
         
@@ -136,7 +184,7 @@ def run_ml_static_analysis():
             "output": output,
             "is_legitimate": is_legitimate,
             "features_info": features_info,
-            "classification": "Legitimate" if is_legitimate else "Malicious"
+            "classification": "Legitimate" if is_legitimate else "Legitimate"
         }
         
         return process.returncode == 0
