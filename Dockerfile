@@ -96,6 +96,7 @@ RUN apt-get update && apt-get install -y \
     liblzma-dev \
     git \
     ca-certificates \
+    python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Install pyenv
@@ -135,7 +136,3 @@ EXPOSE 8080
 
 # Command to run the application
 CMD ["bash", "-c", "source venv/bin/activate && python app.main.py"]
-
-
-
-
