@@ -126,7 +126,7 @@ RUN chmod +x install.sh && \
     cd static_ml_analysis && \
     python -m venv --without-pip env && \
     source env/bin/activate && \
-    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
+    curl https://bootstrap.pypa.io/pip/3.8/get-pip.py -o get-pip.py && \
     python get-pip.py && \
     pip install -r requirements.new.txt && \
     deactivate'
