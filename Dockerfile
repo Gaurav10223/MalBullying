@@ -60,7 +60,7 @@ RUN chmod +x install.sh && \
     deactivate'
 
 # Expose port
-EXPOSE 5000
+EXPOSE 8080
 
 # Command to run the application
 CMD ["bash", "-c", "source venv/bin/activate && python app.main.py"]
