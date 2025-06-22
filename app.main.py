@@ -145,6 +145,54 @@ def run_static_analysis():
 #         return False
 
 
+# def run_ml_static_analysis():
+#     """Run ML-based static analysis using the dedicated Python environment."""
+#     global current_file_path
+#     try:
+#         if not current_file_path:
+#             return False
+
+#         # Define absolute paths within the container
+#         python_executable = "/app/static_ml_analysis/env/bin/python"
+#         script_path = "/app/static_ml_analysis/main.py"
+        
+#         # Ensure the file path passed to the script is absolute
+#         absolute_file_path = os.path.abspath(current_file_path)
+
+#         # The command is now simple and reliable
+#         command = [python_executable, script_path, absolute_file_path]
+        
+#         process = subprocess.Popen(
+#             command,
+#             stdout=subprocess.PIPE,
+#             stderr=subprocess.STDOUT,
+#             text=True,
+#             encoding='utf-8',
+#             errors='replace'
+#         )
+
+#         output = process.communicate()[0]
+        
+#         # Parse the output
+#         is_legitimate = "legitimate" in output.lower()
+#         features_info = ""
+        
+#         if "Features used for classification:" in output:
+#             features_info = output.split("Features used for classification:")[1].strip()
+        
+#         results["ml_static_analysis"] = {
+#             "output": output,
+#             "is_legitimate": is_legitimate,
+#             "features_info": features_info,
+#             "classification": "Legitimate" if is_legitimate else "Legitimate"
+#         }
+        
+#         return process.returncode == 0
+#     except Exception as e:
+#         results["ml_static_analysis"] = {"error": str(e)}
+#         return False
+
+
 def run_ml_static_analysis():
     """Run ML-based static analysis using the dedicated Python environment."""
     global current_file_path
@@ -152,8 +200,8 @@ def run_ml_static_analysis():
         if not current_file_path:
             return False
 
-        # Define absolute paths within the container
-        python_executable = "/app/static_ml_analysis/env/bin/python"
+        # Use the global Python 3.8.10 installation
+        python_executable = "/root/.pyenv/versions/3.8.10/bin/python"
         script_path = "/app/static_ml_analysis/main.py"
         
         # Ensure the file path passed to the script is absolute
@@ -184,7 +232,7 @@ def run_ml_static_analysis():
             "output": output,
             "is_legitimate": is_legitimate,
             "features_info": features_info,
-            "classification": "Legitimate" if is_legitimate else "Legitimate"
+            "classification": "Legitimate" if is_legitimate else "Malicious"  # Fixed typo
         }
         
         return process.returncode == 0
