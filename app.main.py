@@ -13,7 +13,7 @@ CORS(app)
 
 # Configuration
 UPLOAD_FOLDER = 'uploads'
-ALLOWED_EXTENSIONS = {'exe'}
+ALLOWED_EXTENSIONS = {'exe','deb'}
 ML_API_URL = "http://localhost:4000/scan"
 VIRUSTOTAL_API_KEY = "10b9b04880cbcb20edee98837bf7812d431658b9aa6ebb8a4918f33763d0b7be"
 VIRUSTOTAL_API_URL = "https://www.virustotal.com/api/v3/files/"
