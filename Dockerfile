@@ -202,8 +202,9 @@ RUN /root/.pyenv/versions/3.10.11/bin/pip install -r requirements.new.txt && \
     /root/.pyenv/versions/3.10.11/bin/pip install flare-floss
 
 # Switch to Python 3.8.10 for static_ml_analysis
-RUN bash -c 'source ~/.bashrc && \
-    eval "$(pyenv init --path)" && \
+# Switch to Python 3.8.10 for static_ml_analysis
+RUN bash -c 'eval "$(pyenv init --path)" && \
+    eval "$(pyenv init -)" && \
     pyenv shell 3.8.10 && \
     curl https://bootstrap.pypa.io/pip/3.8/get-pip.py -o get-pip.py && \
     /root/.pyenv/versions/3.8.10/bin/python get-pip.py && \
